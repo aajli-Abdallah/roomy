@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Roomy: Wide AI Chats",
+  "version": "3.0.7",
+  "description": "Widen ChatGPT and Gemini chats, cycle widths with a shortcut, and get table tools (expand, copy as CSV / Excel / Markdown).",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://gemini.google.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["shared.js", "content.js"],
+      "css": ["css/common.css", "css/chatgpt.css"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": ["shared.js", "content.js"],
+      "css": ["css/common.css", "css/gemini.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Roomy: Wide AI Chats"
+  },
+  "commands": {
+    "cycle-width": {
+      "suggested_key": { "default": "Alt+Shift+W" },
+      "description": "Cycle chat width on the current site (Normal, Wide, Extra wide, Full)"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

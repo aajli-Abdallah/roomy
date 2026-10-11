@@ -1,0 +1,54 @@
+/* Roomy — ChatGPT rules (chatgpt.com, chat.openai.com)
+ *
+ * Three layers, so a ChatGPT redesign rarely breaks it:
+ *  1. Override ChatGPT's own width CSS variable, if present.
+ *  2. Override known Tailwind max-w-* classes, only inside <main>.
+ *  3. content.js measures the real message column and tags it with
+ *     [data-roomy-col] (rule lives in common.css).
+ * Everything is gated on "mode is not normal".
+ */
+
+:root { --roomy-accent: #10a37f; }
+
+/* ---------- 1. ChatGPT's own width variable ---------- */
+html:not([data-roomy-mode="normal"]) [class*="thread-content-max-width"] {
+  --thread-content-max-width: var(--roomy-max) !important;
+}
+
+/* ---------- 2. Known max-width classes (messages + composer) ---------- */
+html:not([data-roomy-mode="normal"]) main :is(
+  [class*="max-w-2xl"],
+  [class*="max-w-3xl"],
+  [class*="max-w-4xl"],
+  [class*="max-w-5xl"],
+  [class*="max-w-[38rem]"],
+  [class*="max-w-[40rem]"],
+  [class*="max-w-[48rem]"],
+  [class*="max-w-(--thread-content-max-width)"]
+) {
+  max-width: var(--roomy-max) !important;
+}
+
+/* ---------- Row highlight + zebra stripes (in-page tables) ---------- */
+html[data-roomy-zebra] main table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, currentColor 5%, transparent);
+}
+html[data-roomy-zebra] main table tbody tr:hover {
+  background: color-mix(in srgb, currentColor 9%, transparent);
+}
+
+/* ---------- Wrap long code lines ---------- */
+html[data-roomy-wrap] main :is(pre, pre code) {
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* ---------- Extra table spacing (in-page tables) ----------
+ * Cell padding keeps text off the borders; block margin keeps the table
+ * away from the paragraphs above and below it. Toggle: popup > Extra table spacing. */
+html[data-roomy-space] main table {
+  margin-block: 14px !important;
+}
+html[data-roomy-space] main table :is(th, td) {
+  padding: 10px 16px !important;
+}

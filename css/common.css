@@ -1,0 +1,186 @@
+/* Roomy — styles shared by every supported site.
+ * Site-specific width rules live in chatgpt.css / gemini.css.
+ */
+
+/* Default until settings load, so there is no narrow-layout flash. */
+:root {
+  --roomy-max: min(1300px, 100%);
+  --roomy-accent: #6366f1;
+}
+
+/* Columns detected by content.js at runtime (survives renamed classes). */
+html:not([data-roomy-mode="normal"]) [data-roomy-col] {
+  max-width: var(--roomy-max) !important;
+}
+
+/* ---------- Floating table toolbar ---------- */
+.roomy-tb {
+  position: fixed;
+  z-index: 2147483000;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 8px;
+  background: #2b2b2e;
+  color: #f2f2f3;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  font: 500 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.roomy-tb[hidden] { display: none; }
+.roomy-tb button {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 6px 9px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.roomy-tb button:hover { background: rgba(255, 255, 255, 0.14); }
+.roomy-tb button:focus-visible { outline: 2px solid var(--roomy-accent); }
+
+/* ---------- Expanded table overlay ---------- */
+.roomy-ov {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483001;
+  background: rgba(0, 0, 0, 0.55);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  --rm-bg: #ffffff;
+  --rm-fg: #1a1a1a;
+  --rm-muted: #666b70;
+  --rm-border: #d9dbde;
+  --rm-head: #f0f1f3;
+  --rm-zebra: #f7f8f9;
+  --rm-hover: #ebecee;
+}
+.roomy-ov.roomy-dark {
+  --rm-bg: #212121;
+  --rm-fg: #ececec;
+  --rm-muted: #a0a4a8;
+  --rm-border: #3d3e40;
+  --rm-head: #2d2e30;
+  --rm-zebra: #282829;
+  --rm-hover: #343536;
+}
+.roomy-panel {
+  position: absolute;
+  inset: 2.5vh 2vw;
+  display: flex;
+  flex-direction: column;
+  background: var(--rm-bg);
+  color: var(--rm-fg);
+  border: 1px solid var(--rm-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.roomy-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--rm-border);
+}
+.roomy-title { font-weight: 600; }
+.roomy-meta { color: var(--rm-muted); font-size: 12px; margin-right: auto; }
+.roomy-bar button {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--rm-border);
+  font-size: 13px;
+  color: var(--rm-fg);
+}
+.roomy-bar button:hover { background: var(--rm-hover); }
+.roomy-bar button:focus-visible,
+.roomy-body:focus-visible { outline: 2px solid var(--roomy-accent); outline-offset: -2px; }
+.roomy-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--rm-muted);
+  cursor: pointer;
+}
+.roomy-body {
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* Sticky header always; sticky first column when .roomy-freeze is on. */
+.roomy-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 14px;
+}
+.roomy-table th,
+.roomy-table td {
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+  background: var(--rm-bg);
+  color: var(--rm-fg);
+  border-right: 1px solid var(--rm-border);
+  border-bottom: 1px solid var(--rm-border);
+}
+.roomy-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--rm-head);
+  font-weight: 600;
+}
+.roomy-table tbody tr:nth-child(even) td { background: var(--rm-zebra); }
+.roomy-table tbody tr:hover td { background: var(--rm-hover); }
+.roomy-freeze .roomy-table th:first-child,
+.roomy-freeze .roomy-table td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.roomy-freeze .roomy-table thead th:first-child { z-index: 3; }
+
+/* Site logos / favicons inside links. The clone has no site classes (they sized the icons),
+ * so without this they render at their natural, often huge, size. Cap them to text height. */
+.roomy-table img,
+.roomy-table svg,
+.roomy-table canvas {
+  width: 1.15em !important;
+  height: 1.15em !important;
+  max-width: 1.15em !important;
+  max-height: 1.15em !important;
+  object-fit: contain;
+  vertical-align: -0.2em;
+  margin-inline-end: 0.35em;
+  border-radius: 3px;
+}
+.roomy-hide-icons .roomy-table :is(img, svg, picture, canvas) {
+  display: none !important;
+}
+
+/* ---------- Toast (top-centre so it never covers the prompt box) ---------- */
+.roomy-toast {
+  position: fixed;
+  left: 50%;
+  top: 72px;
+  transform: translateX(-50%) translateY(-8px);
+  z-index: 2147483002;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #2b2b2e;
+  color: #f2f2f3;
+  font: 500 13px/1 system-ui, -apple-system, "Segoe UI", sans-serif;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.roomy-toast.show {
+  opacity: 1;
+  transform: translateX(-50%);
+}

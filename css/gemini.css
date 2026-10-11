@@ -1,0 +1,71 @@
+/* Roomy — Gemini rules (gemini.google.com)
+ *
+ * Gemini caps its column at ~760px, and pins response markdown at ~708px and
+ * code blocks at ~740px through native @scope rules. So we:
+ *  1. Override those known containers/children (with !important, and an
+ *     ID-level specificity bump so we also win against :not(#_) rules).
+ *  2. Let content.js measure the real layout and tag any remaining
+ *     px-capped ancestor with [data-roomy-col] (rule lives in common.css).
+ * Everything is gated on "mode is not normal".
+ */
+
+:root { --roomy-accent: #4285f4; }
+
+/* ---------- 1a. Conversation column ---------- */
+html:not([data-roomy-mode="normal"]):not(#_) :is(
+  .conversation-container,
+  .conversation-container :is(
+    user-query,
+    model-response,
+    model-response-disclaimers,
+    response-container,
+    message-content
+  )
+) {
+  max-width: var(--roomy-max) !important;
+}
+
+/* ---------- 1b. Response markdown, code blocks, response widgets ---------- */
+/* Scoped to the thread: .md-content also exists in canvas / side panels. */
+html:not([data-roomy-mode="normal"]):not(#_) :is(model-response, .conversation-container) .md-content > *,
+html:not([data-roomy-mode="normal"]):not(#_) :is(model-response, .conversation-container) :is(
+  code-block,
+  message-actions,
+  thinking-overlay,
+  .response-footer
+) {
+  max-width: var(--roomy-max) !important;
+}
+
+/* ---------- 1c. Prompt box ---------- */
+html:not([data-roomy-mode="normal"]):not(#_) :is(
+  input-container,
+  input-area-v2,
+  .input-area-container
+) {
+  max-width: var(--roomy-max) !important;
+}
+
+/* ---------- Row highlight + zebra stripes (in-page tables) ---------- */
+html[data-roomy-zebra] :is(model-response, .conversation-container) table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, currentColor 5%, transparent);
+}
+html[data-roomy-zebra] :is(model-response, .conversation-container) table tbody tr:hover {
+  background: color-mix(in srgb, currentColor 9%, transparent);
+}
+
+/* ---------- Wrap long code lines ---------- */
+html[data-roomy-wrap] :is(model-response, .conversation-container) :is(pre, pre code) {
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* ---------- Extra table spacing (in-page tables) ----------
+ * Cell padding keeps text off the borders; block margin keeps the table
+ * away from the paragraphs above and below it. Toggle: popup > Extra table spacing. */
+html[data-roomy-space] :is(model-response, .conversation-container) table {
+  margin-block: 14px !important;
+}
+html[data-roomy-space] :is(model-response, .conversation-container) table :is(th, td) {
+  padding: 10px 16px !important;
+}

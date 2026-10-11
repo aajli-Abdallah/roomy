@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Roomy</title>
+  <style>
+    :root { color-scheme: dark; --accent: #6366f1; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      width: 280px;
+      margin: 0;
+      padding: 14px;
+      background: #1e1f22;
+      color: #e6e7ea;
+      font-size: 13px;
+    }
+    h1 { font-size: 14px; font-weight: 600; margin: 0 0 10px; display: flex; justify-content: space-between; align-items: baseline; }
+    .ver { font-size: 11px; font-weight: 400; color: #9a9da3; }
+    .sites { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 3px; margin-bottom: 12px; border-radius: 10px; background: #2a2b2f; }
+    button.site {
+      all: unset; cursor: pointer; box-sizing: border-box; text-align: center;
+      padding: 6px; border-radius: 8px; color: #b8bbc1;
+    }
+    button.site.active { background: #3a3c42; color: #fff; font-weight: 600; }
+    .hint { font-size: 11px; color: #9a9da3; margin: -4px 0 10px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    button.preset {
+      all: unset; cursor: pointer; box-sizing: border-box; text-align: center;
+      padding: 8px 6px; border-radius: 8px; background: #2a2b2f;
+    }
+    button.preset:hover { background: #35373c; }
+    button.preset.active { background: var(--accent); color: #fff; font-weight: 600; }
+    button:focus-visible, input:focus-visible { outline: 2px solid #a5b4fc; outline-offset: 2px; }
+    .slider { margin-top: 12px; padding: 8px 10px; border-radius: 10px; background: #2a2b2f; border: 1px solid transparent; }
+    .slider.active { border-color: var(--accent); }
+    .slider label { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .slider input { width: 100%; accent-color: var(--accent); margin: 0; }
+    .toggles { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .toggles label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .toggles input { accent-color: var(--accent); }
+    .status { margin-top: 12px; padding-top: 10px; border-top: 1px solid #3a3c42; font-size: 12px; color: #c1c4ca; }
+    .foot { margin-top: 8px; font-size: 11px; color: #9a9da3; line-height: 1.5; }
+    kbd { background: #2a2b2f; border-radius: 3px; padding: 1px 4px; font-family: inherit; }
+    button.link { all: unset; cursor: pointer; color: #a5b4fc; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Roomy <span class="ver" id="ver"></span></h1>
+
+  <div class="sites" role="tablist" aria-label="Site">
+    <button class="site" role="tab" data-site="chatgpt">ChatGPT</button>
+    <button class="site" role="tab" data-site="gemini">Gemini</button>
+  </div>
+  <div class="hint" id="hint"></div>
+
+  <div class="grid">
+    <button class="preset" data-mode="normal">Normal</button>
+    <button class="preset" data-mode="wide">Wide</button>
+    <button class="preset" data-mode="extrawide">Extra wide</button>
+    <button class="preset" data-mode="full">Full width</button>
+  </div>
+
+  <div class="slider" id="sliderBox">
+    <label for="px"><span>Custom width</span><output id="pxOut"></output></label>
+    <input type="range" id="px" step="20" />
+  </div>
+
+  <div class="toggles">
+    <label><input type="checkbox" id="tableTools" /> Table toolbar (hover a table)</label>
+    <label><input type="checkbox" id="zebra" /> Row highlight &amp; stripes</label>
+    <label><input type="checkbox" id="tableSpace" /> Extra table spacing</label>
+    <label><input type="checkbox" id="wrapCode" /> Wrap long code lines</label>
+  </div>
+
+  <div class="status" id="status">Checking…</div>
+  <div class="foot">
+    Shortcut <span id="shortcut"></span> cycles the width on the current site.
+    <button class="link" id="keys">Change</button>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
